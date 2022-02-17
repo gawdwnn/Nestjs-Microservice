@@ -2,6 +2,7 @@ version: '3.9'
 services:
   backend:
     build: .
+    container_name: email-microservice
     ports:
       - 8000:3000
     volumes:

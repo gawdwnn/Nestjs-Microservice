@@ -1,0 +1,30 @@
+version: "3.9"
+services: 
+  users_backend:
+    build: .
+    container_name: users-microservice
+    ports:
+      - 8001:3000
+    volumes:
+      - .:/app
+    depends_on:
+      - users_db
+    networks:
+      - users
+
+  users_db:
+    container_name: users-database
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_DATABASE: users
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - .dbdata:/var/lib/mysql
+    networks:
+      - users
+
+
+networks:
+  users:
+    name: users
