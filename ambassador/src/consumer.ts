@@ -19,7 +19,7 @@ async function bootstrap() {
           },
         },
         consumer: {
-          groupId: 'admin-consumer',
+          groupId: 'ambassador-consumer',
         },
       },
     },

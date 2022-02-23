@@ -1,0 +1,50 @@
+version: '3.9'
+services:
+  ambassador_backend:
+    build: .
+    command: "npm run start:dev"
+    container_name: ambassador-microservice
+    ports:
+      - 8003:3000
+    volumes:
+      - .:/app
+    depends_on:
+      - ambassador_db
+    networks:
+      - ambassador
+      - users
+
+  ambassador_consumer:
+    build: .
+    command: "npm run consume"
+    container_name: ambassador-consumer
+    depends_on:
+      - ambassador_db
+    networks:
+      - ambassador
+
+  ambassador_db:
+    image: mysql:8
+    container_name: ambassador-database
+    restart: always
+    environment:
+      MYSQL_DATABASE: ambassador
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - .dbdata:/var/lib/mysql
+    networks:
+      - ambassador
+
+  redis:
+    image: redis
+    container_name: ambassador-redis
+    ports:
+      - 6379:6379
+    networks:
+      - ambassador
+
+networks:
+  ambassador:
+  users:
+    external:
+      name: users
