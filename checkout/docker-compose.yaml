@@ -1,0 +1,42 @@
+version: '3.9'
+services:
+  checkout_backend:
+    build: .
+    command: "npm run start:dev"
+    container_name: checkout-microservice
+    ports:
+      - 8004:3000
+    volumes:
+      - .:/app
+    depends_on:
+      - checkout_db
+    networks:
+      - checkout
+      - users
+
+  checkout_consumer:
+    build: .
+    command: "npm run consume"
+    container_name: checkout-consumer
+    depends_on:
+      - checkout_db
+    networks:
+      - checkout
+
+  checkout_db:
+    image: mysql:8
+    container_name: checkout-database
+    restart: always
+    environment:
+      MYSQL_DATABASE: checkout
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - .dbdata:/var/lib/mysql
+    networks:
+      - checkout
+
+networks:
+  checkout:
+  users:
+    external:
+      name: users
